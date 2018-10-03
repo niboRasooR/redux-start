@@ -4,7 +4,7 @@ import CounterControl from '../../components/CounterControl/CounterControl';
 import CounterOutput from '../../components/CounterOutput/CounterOutput';
 
 import {Connect } from 'react-redux';
-
+import * as a from '../../store/actions'
 class Counter extends Component {
     state = {
         counter: 0
@@ -36,13 +36,13 @@ class Counter extends Component {
                 <CounterControl label="Add 5" clicked={this.props.onAdd5}  />
                 <CounterControl label="Subtract 5" clicked={this.props.onSub5}  />
            
-                <button onClick={this.props.onSave}>Save Result</button>
+                <button onClick={() => this.props.onSave(this.props.c_red)}>Save Result</button>
                 <ul>
 
                     {
                        this.props.re_sluts.map(
                            aitemi => (
-                                <li key={aitemi.key} onClick={ this.props.onDelete }>
+                                <li key={aitemi.key} onClick={ this.props.onDelete(aitemi.id)}>
                                         {aitemi.arvo}
                                   </li>
                            )
@@ -57,10 +57,11 @@ class Counter extends Component {
     }
 }
 
+// TÄSSÄ ENSIMMÄISENÄ KÄYTETÄÄN yhdistettyjä reducereitä
 const mapToProps = state => {
     return {
-        counteri: state.counter,
-        re_sluts: state.results
+        counteri: state.c_red.counter,
+        re_sluts: state.r_red.results
     };
 }
 
@@ -72,9 +73,12 @@ const mapDispatchToProps  = dispatch => {
     return {
         onIncrement : () => { dispatch(  {type: 'INCREMENT'}) },
         onDecrement : () => { dispatch(  {type: 'DECREMENT'}) },
-        onSub5: () => { dispatch ( {type: 'SUB5'}) },
-        onAdd5: () => { dispatch ({type: 'ADD', val: 10})},
-        onSave: () => { dispatch ({type: 'STORE_RESULT'})}
+        onSub5: () => { dispatch ( {type: a.SUB5}) },
+        onAdd5: () => { dispatch ({type: a.ADD, val: 10})},
+        //     onSave: () => { dispatch ({type: a.STORE_RESULT})},
+        // MUUTOS: tarvitaan varten reducerien combinationiä
+        onSave: (result) => { dispatch ({type: a.SAVE_OBJECT, resultti: result})}, //HUOM: taas määritellään nimi
+        onDel: ( idOfDeleted ) => { dispatch ({type: a.DELETE_RESULT, resultElementID: idOfDeleted}) }
     }
 }
 
